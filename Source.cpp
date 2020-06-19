@@ -33,21 +33,21 @@ using IMG = vector<vector<double>>;
 /* Alias for paired data(unsigned int).
    first: x-axis data, second: y-axis data.
    (Used for Image size etc...) */
-using uiP = pair<unsigned int, unsigned int>;	
+using uiP = pair<unsigned int, unsigned int>;
 
 /* Alias for paired data(int).
    first: x-axis data, second: y-axis data.
    (Used for src search range, srcxLoop and srcyLoop variables) */
-using iP = pair<int, int>;						
+using iP = pair<int, int>;
 
 /* Alias for paired data(double).
    first: x-axis data, second: y-axis data.
    (Used for Resolution, Isocenter etc...) */
-using dP = pair<double, double>;				
+using dP = pair<double, double>;
 
 /* Alias for line equation(ax + by + c = 0).
    <0>: a, <1>: b, <2>: c */
-using dT = tuple<double, double, double>;		
+using dT = tuple<double, double, double>;
 
 class AreaAverageInterpolation
 {
@@ -63,25 +63,25 @@ public:
 		cout << "* Input parameters                                       *" << endl;
 		cout << "*                                                        *" << endl;
 		cout << "* srcResolution : " << setw(9) << srcResolution.first << ", "
-									 << setw(9) << srcResolution.second
-									 << setw(20) << " [pixel/mm or dpi] *" << endl;
+			                         << setw(9) << srcResolution.second
+			                         << setw(20) << " [pixel/mm or dpi] *" << endl;
 		cout << "* dstResolution : " << setw(9) << dstResolution.first << ", "
-									 << setw(9) << dstResolution.second
-									 << setw(20) << " [pixel/mm or dpi] *" << endl;
+			                         << setw(9) << dstResolution.second
+			                         << setw(20) << " [pixel/mm or dpi] *" << endl;
 		cout << "* srcIsocenter  : " << setw(9) << srcIsocenter.first << ", "
-									 << setw(9) << srcIsocenter.second
-									 << setw(20) << " [pixels] *" << endl;
+			                         << setw(9) << srcIsocenter.second
+			                         << setw(20) << " [pixels] *" << endl;
 		cout << "* rotationAngle : " << setw(20) << rotationAngle
-									 << setw(20) << " [degrees] *" << endl;
+			                         << setw(20) << " [degrees] *" << endl;
 		cout << "**********************************************************" << endl;
 
 
 		/* #######   Description of arguments   #######
-		 * src :							source image
-		 * dst :							destination (interpolated and rotated) image
-		 * srcResolution, dstResolution :	source & destination resolution [pixel/mm or dpi]
-		 * srcIsocenter, dstIsocenter :		source & destination isocenter (rotation center) [pixel]
-		 * rotationAngle :					clockwise is positive [degree]
+		 * src :                          source image
+		 * dst :                          destination (interpolated and rotated) image
+		 * srcResolution, dstResolution : source & destination resolution [pixel/mm or dpi]
+		 * srcIsocenter, dstIsocenter :   source & destination isocenter (rotation center) [pixel]
+		 * rotationAngle :                clockwise is positive [degree]
 		 * Return argument :
 		 *   first(bool)    -> is finished successfully
 		 *   second(string) -> error message when first(bool) is false
@@ -89,21 +89,21 @@ public:
 
 
 		/* #######   Declarations   ####### */
-		pair<bool, string> ret;		/* return argument */
-		IMG modSrc;					/* expanded source image by integer */
-		uiP srcSize, modSrcSize;	/* image size of src & modSrc */
-		uiP dstSize;				/* image size of dst */
-		dP dstIsocenterOffset;		/* offset factor that moves dstIsocenter to the pixel center */
-		vector<vector<dP>> dstPos;	/* dst pixel positions in src pixel scale */
-		double expansionRatio;		/* expansion ratio (= dstResoluton / srcResolution) */
-		double dstSideLength;		/* = 1/expansionRatio (the dst side length in src pixel scale) */
-		vector<dT> dstHorizontalLine, dstVerticalLine;	/* horizontal and vertical dst pixel sizes (expressed as ax + by + c = 0: tuple components are a, b and c.) */
+		pair<bool, string> ret;     /* return argument */
+		IMG modSrc;                 /* expanded source image by integer */
+		uiP srcSize, modSrcSize;    /* image size of src & modSrc */
+		uiP dstSize;                /* image size of dst */
+		dP dstIsocenterOffset;      /* offset factor that moves dstIsocenter to the pixel center */
+		vector<vector<dP>> dstPos;  /* dst pixel positions in src pixel scale */
+		double expansionRatio;      /* expansion ratio (= dstResoluton / srcResolution) */
+		double dstSideLength;       /* = 1/expansionRatio (the dst side length in src pixel scale) */
+		vector<dT> dstHorizontalLine, dstVerticalLine; /* horizontal and vertical dst pixel sizes (expressed as ax + by + c = 0: tuple components are a, b and c.) */
 		double _sin, _cos;
-		dP offset;					/* positional offset to prevent the image from being cut off after rotation */
-		PixelState srcPixelState;	/* structure to determine area type */
+		dP offset;                  /* positional offset to prevent the image from being cut off after rotation */
+		PixelState srcPixelState;   /* structure to determine area type */
 		dP dstVertex[4], srcVertex[4];
-		int intersectionType[4];	/* intersection type (See 'getIntersectionType' function for the details) */
-		double r[4], s[4];			/* intersection point (See 'getIntersectionType' function for the details) */
+		int intersectionType[4];    /* intersection type (See 'getIntersectionType' function for the details) */
+		double r[4], s[4];          /* intersection point (See 'getIntersectionType' function for the details) */
 		iP srcxLoop, srcyLoop;
 		double tmpArea, sumArea;
 		double areaWeightedPixelValue;
@@ -138,9 +138,9 @@ public:
 		 *  - And to minimize branch of processing, rotation angle is restricted in the first quadrant by rotating 90, 180 or 270 degrees in advance.
 		 */
 		unsigned int scale = unsigned int(dstResolution.first / srcResolution.first * sqrt(2) + 1 + DBL_EPSILON);
-		int beforehandRotationMode;	/* 0:None, 1:90deg, 2:180deg, 3:270deg */
-		while ( rotationAngle < 0 )		rotationAngle += 360;	/* the range is restricted 0 to 360 degrees */
-		while ( 360 <= rotationAngle )	rotationAngle -= 360;	/* the range is restricted 0 to 360 degrees */
+		int beforehandRotationMode; /* 0:None, 1:90deg, 2:180deg, 3:270deg */
+		while ( rotationAngle < 0 )		rotationAngle += 360; /* the range is restricted 0 to 360 degrees */
+		while ( 360 <= rotationAngle )	rotationAngle -= 360; /* the range is restricted 0 to 360 degrees */
 		if ( rotationAngle < 90 )		{ beforehandRotationMode = 0; }
 		else if ( rotationAngle < 180 ) { beforehandRotationMode = 1; rotationAngle -= 90; }
 		else if ( rotationAngle < 270 ) { beforehandRotationMode = 2; rotationAngle -= 180; }
@@ -186,7 +186,7 @@ public:
 		dstIsocenter.first = (int)dstIsocenter.first;
 		dstIsocenter.second = (int)dstIsocenter.second;
 		offset.first = offset.second = 0;
-		
+
 		/* Rotate left-upper point (0, 0) */
 		offset.first = min(offset.first, -srcIsocenter.first*_cos + srcIsocenter.second*_sin + srcIsocenter.first);
 		offset.second = min(offset.second, -srcIsocenter.first*_sin - srcIsocenter.second*_cos + srcIsocenter.second);
@@ -244,31 +244,31 @@ public:
 		dstHorizontalLine.resize(dstSize.second + 1);
 		for ( unsigned int dsty = 0; dsty < dstSize.second + 1; ++dsty ) {
 			if ( rotationAngle < 45 ) {
-				get<0>(dstHorizontalLine[dsty]) = tmp_tan;  /* ax + y + c = 0 (y = -ax - c) */
+				get<0>(dstHorizontalLine[dsty]) = tmp_tan; /* ax + y + c = 0 (y = -ax - c) */
 				get<1>(dstHorizontalLine[dsty]) = 1;
 				if ( dsty < dstSize.second ) {
 					get<2>(dstHorizontalLine[dsty]) =
 						-get<0>(dstHorizontalLine[dsty])*(dstPos[dsty][0].first - dstSideLength / 2 * (tmp_cos + tmp_sin))
-						- (dstPos[dsty][0].second - dstSideLength / 2 * (tmp_cos - tmp_sin));	/* c = -ax - y */
+						- (dstPos[dsty][0].second - dstSideLength / 2 * (tmp_cos - tmp_sin)); /* c = -ax - y */
 				}
 				else {
 					get<2>(dstHorizontalLine[dsty]) =
 						-get<0>(dstHorizontalLine[dsty])*(dstPos.back()[0].first - dstSideLength / 2 * (tmp_cos - tmp_sin))
-						- (dstPos.back()[0].second + dstSideLength / 2 * (tmp_cos + tmp_sin));	/* c = -ax - y */
+						- (dstPos.back()[0].second + dstSideLength / 2 * (tmp_cos + tmp_sin)); /* c = -ax - y */
 				}
 			}
 			else {
 				get<0>(dstHorizontalLine[dsty]) = 1;
-				get<1>(dstHorizontalLine[dsty]) = -tmp_tan;	/* x + by + c = 0 (x = -by - c) */
+				get<1>(dstHorizontalLine[dsty]) = -tmp_tan; /* x + by + c = 0 (x = -by - c) */
 				if ( dsty < dstSize.second ) {
 					get<2>(dstHorizontalLine[dsty]) =
 						-(dstPos[dsty][0].first - dstSideLength / 2 * (tmp_cos + tmp_sin))
-						- get<1>(dstHorizontalLine[dsty])*(dstPos[dsty][0].second - dstSideLength / 2 * (tmp_cos - tmp_sin));	/* c = -x - by */
+						- get<1>(dstHorizontalLine[dsty])*(dstPos[dsty][0].second - dstSideLength / 2 * (tmp_cos - tmp_sin)); /* c = -x - by */
 				}
 				else {
 					get<2>(dstHorizontalLine[dsty]) =
 						-(dstPos.back()[0].first + dstSideLength / 2 * (tmp_cos - tmp_sin))
-						- get<1>(dstHorizontalLine[dsty])*(dstPos.back()[0].second - dstSideLength / 2 * (tmp_cos + tmp_sin));	/* c = -x - by */
+						- get<1>(dstHorizontalLine[dsty])*(dstPos.back()[0].second - dstSideLength / 2 * (tmp_cos + tmp_sin)); /* c = -x - by */
 				}
 			}
 		}
@@ -277,30 +277,30 @@ public:
 		for ( unsigned int dstx = 0; dstx < dstSize.first + 1; ++dstx ) {
 			if ( rotationAngle < 45 ) {
 				get<0>(dstVerticalLine[dstx]) = 1;
-				get<1>(dstVerticalLine[dstx]) = -tmp_tan;	/* x + by + c = 0 (x = -by - c) */
+				get<1>(dstVerticalLine[dstx]) = -tmp_tan; /* x + by + c = 0 (x = -by - c) */
 				if ( dstx < dstSize.first ) {
 					get<2>(dstVerticalLine[dstx]) =
 						-(dstPos[0][dstx].first - dstSideLength / 2 * (tmp_cos + tmp_sin))
-						- get<1>(dstVerticalLine[dstx])*(dstPos[0][dstx].second - dstSideLength / 2 * (tmp_cos - tmp_sin));	/* c = -x - by */
+						- get<1>(dstVerticalLine[dstx])*(dstPos[0][dstx].second - dstSideLength / 2 * (tmp_cos - tmp_sin)); /* c = -x - by */
 				}
 				else {
 					get<2>(dstVerticalLine[dstx]) =
 						-(dstPos[0].back().first + dstSideLength / 2 * (tmp_cos - tmp_sin))
-						- get<1>(dstVerticalLine[dstx])*(dstPos[0].back().second - dstSideLength / 2 * (tmp_cos + tmp_sin));
+						- get<1>(dstVerticalLine[dstx])*(dstPos[0].back().second - dstSideLength / 2 * (tmp_cos + tmp_sin)); /* c = -x - by */
 				}
 			}
 			else {
-				get<0>(dstVerticalLine[dstx]) = tmp_tan;	/* ax + y + c = 0 (y = -ax - c) */
+				get<0>(dstVerticalLine[dstx]) = tmp_tan; /* ax + y + c = 0 (y = -ax - c) */
 				get<1>(dstVerticalLine[dstx]) = 1;
 				if ( dstx < dstSize.first ) {
 					get<2>(dstVerticalLine[dstx]) =
 						-get<0>(dstVerticalLine[dstx])*(dstPos[0][dstx].first - dstSideLength / 2 * (tmp_cos - tmp_sin))
-						- (dstPos[0][dstx].second + dstSideLength / 2 * (tmp_cos + tmp_sin));	   /* c = -ax - y */
+						- (dstPos[0][dstx].second + dstSideLength / 2 * (tmp_cos + tmp_sin)); /* c = -ax - y */
 				}
 				else {
 					get<2>(dstVerticalLine[dstx]) =
 						-get<0>(dstVerticalLine[dstx])*(dstPos[0].back().first - dstSideLength / 2 * (tmp_cos + tmp_sin))
-						- (dstPos[0].back().second - dstSideLength / 2 * (tmp_cos - tmp_sin));
+						- (dstPos[0].back().second - dstSideLength / 2 * (tmp_cos - tmp_sin)); /* c = -ax - y */
 				}
 			}
 		}
@@ -374,7 +374,7 @@ public:
 			 *  3. If srcCenter is outside the dst pixel, at least one of the rays will not be intersected.
 			 */
 
-			 /* when looking dst vertices clockwise, these are in this order. */
+			 /* when looking dst vertices clockwise, these are in this order */
 			vector<dP> dstVertices = { dstVertex[0], dstVertex[1], dstVertex[3], dstVertex[2] };
 			double tmpr, tmps;
 			int crossPoints;
@@ -384,7 +384,7 @@ public:
 			for ( unsigned int direction = 0; direction < 4; ++direction ) {
 				/* direction indicates 0:upper, 1:lower, 2:left, 3:right */
 				crossPoints = 0;
-				srcCenterRay = make_pair(srcCenter.first + addx[direction], srcCenter.second + addy[direction]);	
+				srcCenterRay = make_pair(srcCenter.first + addx[direction], srcCenter.second + addy[direction]);
 				for ( unsigned int i = 0; i < dstVertices.size(); ++i ) {
 					getIntersectionType(srcCenter, srcCenterRay, tmpr, dstVertices[i], dstVertices[(i + 1) % dstVertices.size()], tmps);
 					if ( - DBL_EPSILON < tmpr && - DBL_EPSILON < tmps && tmps < 1 + DBL_EPSILON )	crossPoints++;
@@ -468,11 +468,11 @@ public:
 						intersectionType[3] = getIntersectionType(dstVertex[1], dstVertex[3], r[3], srcVertex[2], srcVertex[3], s[3]);
 						updatePixelState_intersection();
 
-						/* dose dst pixel includes src pixel center ? */
+						/* dose dst pixel include src pixel center ? */
 						updatePixelState_isIncludedSrcPixel(make_pair(srcx, srcy));
 						
 
-						/* dose src pixel includes dst vertices ? */
+						/* dose src pixel include dst vertices ? */
 						updatePixelState_isIncludedDstVertex();
 
 
@@ -591,36 +591,43 @@ public:
 		cout << setprecision(10);
 		cout << "* Input parameters                                       *" << endl;
 		cout << "*                                                        *" << endl;
-		cout << "* srcResolution : " << setw(9) << srcResolution.first << ", " << setw(9) << srcResolution.second << setw(20) << " [pixel/mm or dpi] *" << endl;
-		cout << "* dstResolution : " << setw(9) << dstResolution.first << ", " << setw(9) << dstResolution.second << setw(20) << " [pixel/mm or dpi] *" << endl;
-		cout << "* srcIsocenter  : " << setw(9) << srcIsocenter.first << ", " << setw(9) << srcIsocenter.second << setw(20) << " [pixels] *" << endl;
-		cout << "* rotationAngle : " << setw(20) << rotationAngle << setw(20) << " [degrees] *" << endl;
+		cout << "* srcResolution : " << setw(9) << srcResolution.first << ", "
+			                         << setw(9) << srcResolution.second
+			                         << setw(20) << " [pixel/mm or dpi] *" << endl;
+		cout << "* dstResolution : " << setw(9) << dstResolution.first << ", "
+			                         << setw(9) << dstResolution.second
+			                         << setw(20) << " [pixel/mm or dpi] *" << endl;
+		cout << "* srcIsocenter  : " << setw(9) << srcIsocenter.first << ", "
+			                         << setw(9) << srcIsocenter.second
+			                         << setw(20) << " [pixels] *" << endl;
+		cout << "* rotationAngle : " << setw(20) << rotationAngle
+			                         << setw(20) << " [degrees] *" << endl;
 		cout << "**********************************************************" << endl;
 
 		/* #######   Description of arguments   #######
-		 * src :							source image
-		 * dst :							destination image (interpolated & rotated image)
-		 * srcResolution, dstResolution :	source & destination resolution [pixel/mm or dpi]
-		 * srcIsocenter, dstIsocenter :		source & destination isocenter (rotation center) [pixel]
-		 * rotationAngle :					clockwise is positive [degree]
+		 * src :                          source image
+		 * dst :                          destination (interpolated & rotated image) image
+		 * srcResolution, dstResolution : source & destination resolution [pixel/mm or dpi]
+		 * srcIsocenter, dstIsocenter :   source & destination isocenter (rotation center) [pixel]
+		 * rotationAngle :                clockwise is positive [degree]
 		 * Return argument :
-		 *   first(bool)    -> Is finished successfully
-		 *   second(string) -> Error message when first(bool) is false
+		 *   first(bool)    -> is finished successfully
+		 *   second(string) -> error message when first(bool) is false
 		 */
 
 
 		/* #######   Declarations   ####### */
-		pair<bool, string> ret;		// return argument
-		IMG modSrc;					// Expanded source image (by integer)
-		uiP srcSize, modSrcSize;	// src image size
-		uiP dstSize;				// dst image size
-		dP dstIsocenterOffset;		// Offset factor that moves dstIsocenter to the pixel center (Make dstIsocenter integer)
-		vector<vector<dP>> dstPos;	// dst(resized, rotated) pixel position [src pixel scale]
-		double expansionRatio;		// Expansion ratio (dstResoluton / srcResolution)
-		double dstSideLength;		// = 1/expansionRatio [src pixel scale]
-		vector<dT> dstHorizontalLine, dstVerticalLine;	// horizontal and vertical dst pixel sizes(ax + by + c = 0: tuple components are a, b and c.)
+		pair<bool, string> ret;     /* return argument */
+		IMG modSrc;                 /* expanded source image by integer */
+		uiP srcSize, modSrcSize;    /* image size of src & modSrc */
+		uiP dstSize;                /* image size of dst */
+		dP dstIsocenterOffset;      /* offset factor that moves dstIsocenter to the pixel center */
+		vector<vector<dP>> dstPos;	/* dst pixel positions in src pixel scale */
+		double expansionRatio;		/* Expansion ratio (= dstResoluton / srcResolution) */
+		double dstSideLength;		/* = 1/expansionRatio (the dst side length in src pixel scale) */
+		vector<dT> dstHorizontalLine, dstVerticalLine;	/* horizontal and vertical dst pixel sizes (expressed as ax + by + c = 0: tuple components are a, b and c.) */
 		double _sin, _cos;
-		dP offset;					// Positional offset to prevent the image from being cut off after rotation
+		dP offset;                  /* Positional offset to prevent the image from being cut off after rotation */
 		bool isIncludedSrcPixelCenter;
 		dP dstVertex[4], srcVertex[4];
 		iP srcxLoop, srcyLoop;
@@ -653,23 +660,27 @@ public:
 
 
 		/* #######   Expand src image & Rotate 90, 180 or 270 degrees in advance   #######
-		 *  - When srcResolution/sqrt(2) <= dstResolution, src image should be expanded, otherwise area cannot be calculated only 9 patterns(required 19 patterns).
-		 *  - To minimize branch of processing, rotation angle is restricted in the first quadrant by rotating 90, 180 or 270 degrees in advance.
+		 *  - When srcResolution/sqrt(2) <= dstResolution, src image should be expanded, otherwise area cannot be calculated only 9 patterns (required 19 patterns).
+		 *  - And to minimize branch of processing, rotation angle is restricted in the first quadrant by rotating 90, 180 or 270 degrees in advance.
 		 */
 		unsigned int scale = unsigned int(dstResolution.first / srcResolution.first * sqrt(2) + 1 + DBL_EPSILON);
-		int beforehandRotationMode;	/* 0:None, 1:90deg, 2:180deg, 3:270deg */
-		while ( rotationAngle < 0 )		rotationAngle += 360;
-		while ( 360 <= rotationAngle )	rotationAngle -= 360;
-		if ( rotationAngle < 90 )		{ beforehandRotationMode = 0; }
+		int beforehandRotationMode; /* 0:None, 1:90deg, 2:180deg, 3:270deg */
+		while ( rotationAngle < 0 )     rotationAngle += 360; /* the range is restricted 0 to 360 degrees */
+		while ( 360 <= rotationAngle )  rotationAngle -= 360; /* the range is restricted 0 to 360 degrees */
+		if ( rotationAngle < 90 )       { beforehandRotationMode = 0; }
 		else if ( rotationAngle < 180 ) { beforehandRotationMode = 1; rotationAngle -= 90; }
 		else if ( rotationAngle < 270 ) { beforehandRotationMode = 2; rotationAngle -= 180; }
-		else							{ beforehandRotationMode = 3; rotationAngle -= 270; }
+		else                            { beforehandRotationMode = 3; rotationAngle -= 270; }
 		_sin = sin(rotationAngle / 180.0*M_PI);
 		_cos = cos(rotationAngle / 180.0*M_PI);
 
 		srcSize = make_pair(src.front().size(), src.size());
-		if ( beforehandRotationMode == 0 || beforehandRotationMode == 2 )	modSrcSize = make_pair(srcSize.first*scale, srcSize.second*scale);
-		else																modSrcSize = make_pair(srcSize.second*scale, srcSize.first*scale);
+		if (beforehandRotationMode == 0 || beforehandRotationMode == 2) {
+			modSrcSize = make_pair(srcSize.first*scale, srcSize.second*scale);
+		}
+		else {
+			modSrcSize = make_pair(srcSize.second*scale, srcSize.first*scale);
+		}
 		modSrc.resize(modSrcSize.second);
 		for ( unsigned int y = 0; y < modSrcSize.second; ++y )	modSrc[y].resize(modSrcSize.first);
 		for ( unsigned int srcy = 0; srcy < srcSize.second; ++srcy ) {
@@ -701,21 +712,22 @@ public:
 		dstIsocenter.first = (int)dstIsocenter.first;
 		dstIsocenter.second = (int)dstIsocenter.second;
 		offset.first = offset.second = 0;
-		// Rotate left-upper point (0, 0)
+
+		/* Rotate left-upper point (0, 0) */
 		offset.first = min(offset.first, -srcIsocenter.first*_cos + srcIsocenter.second*_sin + srcIsocenter.first);
 		offset.second = min(offset.second, -srcIsocenter.first*_sin - srcIsocenter.second*_cos + srcIsocenter.second);
-		// Rotate right-upper (modSrcSize.first - 1, 0)
+		/* Rotate right-upper (modSrcSize.first - 1, 0) */
 		offset.first = min(offset.first, (modSrcSize.first - 1 - srcIsocenter.first)*_cos + srcIsocenter.second*_sin + srcIsocenter.first);
 		offset.second = min(offset.second, (modSrcSize.first - 1 - srcIsocenter.first)*_sin - srcIsocenter.second*_cos + srcIsocenter.second);
-		// Rotate left-lower point (0, modSrcSize.second - 1)
+		/* Rotate left-lower point (0, modSrcSize.second - 1) */
 		offset.first = min(offset.first, -srcIsocenter.first*_cos - (modSrcSize.second - 1 - srcIsocenter.second)*_sin + srcIsocenter.first);
 		offset.second = min(offset.second, -srcIsocenter.first*_sin + (modSrcSize.second - 1 - srcIsocenter.second)*_cos + srcIsocenter.second);
-		// Rotate right-lower (modSrcSize.first, modSrcSize.second)
+		/* Rotate right-lower (modSrcSize.first, modSrcSize.second) */
 		offset.first = min(offset.first, (modSrcSize.first - 1 - srcIsocenter.first)*_cos - (modSrcSize.second - 1 - srcIsocenter.second)*_sin + srcIsocenter.first);
 		offset.second = min(offset.second, (modSrcSize.first - 1 - srcIsocenter.first)*_sin + (modSrcSize.second - 1 - srcIsocenter.second)*_cos + srcIsocenter.second);
 
 
-		/* #######   Calculate dst(resized, rotated) pixel position [src pixel scale]   #######
+		/* #######   Calculate dst pixel position in src pixel scale   #######
 		 *  - RotationAngle indicates angles from src to dst (clockwise is positive), however on this situation,
 		 *    it should be rotated from dst pixel position to src pixel scale (this is common on image interpolation field).
 		 *    Then, rotated inversely.
@@ -754,35 +766,35 @@ public:
 		}
 		if ( fabs(tmp_tan) < DBL_EPSILON )	tmp_tan = 0;
 
-		// Horizontal
+		/* Horizontal sides */
 		dstHorizontalLine.resize(dstSize.second + 1);
 		for ( unsigned int dsty = 0; dsty < dstSize.second + 1; ++dsty ) {
 			if ( rotationAngle < 45 ) {
-				get<0>(dstHorizontalLine[dsty]) = tmp_tan;  // ax + y + c = 0 (y = -ax - c)
+				get<0>(dstHorizontalLine[dsty]) = tmp_tan; /* ax + y + c = 0 (y = -ax - c) */
 				get<1>(dstHorizontalLine[dsty]) = 1;
 				if ( dsty < dstSize.second ) {
 					get<2>(dstHorizontalLine[dsty]) =
 						-get<0>(dstHorizontalLine[dsty])*(dstPos[dsty][0].first - dstSideLength / 2 * (tmp_cos + tmp_sin))
-						- (dstPos[dsty][0].second - dstSideLength / 2 * (tmp_cos - tmp_sin));	// c = -ax - y
+						- (dstPos[dsty][0].second - dstSideLength / 2 * (tmp_cos - tmp_sin)); /* c = -ax - y */
 				}
 				else {
 					get<2>(dstHorizontalLine[dsty]) =
 						-get<0>(dstHorizontalLine[dsty])*(dstPos.back()[0].first - dstSideLength / 2 * (tmp_cos - tmp_sin))
-						- (dstPos.back()[0].second + dstSideLength / 2 * (tmp_cos + tmp_sin));
+						- (dstPos.back()[0].second + dstSideLength / 2 * (tmp_cos + tmp_sin)); /* c = -ax - y */
 				}
 			}
 			else {
 				get<0>(dstHorizontalLine[dsty]) = 1;
-				get<1>(dstHorizontalLine[dsty]) = -tmp_tan;	// x + by + c = 0 (x = -by - c)
+				get<1>(dstHorizontalLine[dsty]) = -tmp_tan; /* x + by + c = 0 (x = -by - c) */
 				if ( dsty < dstSize.second ) {
 					get<2>(dstHorizontalLine[dsty]) =
 						-(dstPos[dsty][0].first - dstSideLength / 2 * (tmp_cos + tmp_sin))
-						- get<1>(dstHorizontalLine[dsty])*(dstPos[dsty][0].second - dstSideLength / 2 * (tmp_cos - tmp_sin));	// c = -x - by
+						- get<1>(dstHorizontalLine[dsty])*(dstPos[dsty][0].second - dstSideLength / 2 * (tmp_cos - tmp_sin)); /* c = -x - by */
 				}
 				else {
 					get<2>(dstHorizontalLine[dsty]) =
 						-(dstPos.back()[0].first + dstSideLength / 2 * (tmp_cos - tmp_sin))
-						- get<1>(dstHorizontalLine[dsty])*(dstPos.back()[0].second - dstSideLength / 2 * (tmp_cos + tmp_sin));
+						- get<1>(dstHorizontalLine[dsty])*(dstPos.back()[0].second - dstSideLength / 2 * (tmp_cos + tmp_sin)); /* c = -x - by */
 				}
 			}
 		}
@@ -791,30 +803,30 @@ public:
 		for ( unsigned int dstx = 0; dstx < dstSize.first + 1; ++dstx ) {
 			if ( rotationAngle < 45 ) {
 				get<0>(dstVerticalLine[dstx]) = 1;
-				get<1>(dstVerticalLine[dstx]) = -tmp_tan;	// x + by + c = 0 (x = -by - c)
+				get<1>(dstVerticalLine[dstx]) = -tmp_tan; /* x + by + c = 0 (x = -by - c) */
 				if ( dstx < dstSize.first ) {
 					get<2>(dstVerticalLine[dstx]) =
 						-(dstPos[0][dstx].first - dstSideLength / 2 * (tmp_cos + tmp_sin))
-						- get<1>(dstVerticalLine[dstx])*(dstPos[0][dstx].second - dstSideLength / 2 * (tmp_cos - tmp_sin));	// c = -x - by
+						- get<1>(dstVerticalLine[dstx])*(dstPos[0][dstx].second - dstSideLength / 2 * (tmp_cos - tmp_sin)); /* c = -x - by */
 				}
 				else {
 					get<2>(dstVerticalLine[dstx]) =
 						-(dstPos[0].back().first + dstSideLength / 2 * (tmp_cos - tmp_sin))
-						- get<1>(dstVerticalLine[dstx])*(dstPos[0].back().second - dstSideLength / 2 * (tmp_cos + tmp_sin));
+						- get<1>(dstVerticalLine[dstx])*(dstPos[0].back().second - dstSideLength / 2 * (tmp_cos + tmp_sin)); /* c = -x - by */
 				}
 			}
 			else {
-				get<0>(dstVerticalLine[dstx]) = tmp_tan;	// ax + y + c = 0 (y = -ax - c)
+				get<0>(dstVerticalLine[dstx]) = tmp_tan; /* ax + y + c = 0 (y = -ax - c) */
 				get<1>(dstVerticalLine[dstx]) = 1;
 				if ( dstx < dstSize.first ) {
 					get<2>(dstVerticalLine[dstx]) =
 						-get<0>(dstVerticalLine[dstx])*(dstPos[0][dstx].first - dstSideLength / 2 * (tmp_cos - tmp_sin))
-						- (dstPos[0][dstx].second + dstSideLength / 2 * (tmp_cos + tmp_sin));	   // c = -ax - y
+						- (dstPos[0][dstx].second + dstSideLength / 2 * (tmp_cos + tmp_sin)); /* c = -ax - y */
 				}
 				else {
 					get<2>(dstVerticalLine[dstx]) =
 						-get<0>(dstVerticalLine[dstx])*(dstPos[0].back().first - dstSideLength / 2 * (tmp_cos + tmp_sin))
-						- (dstPos[0].back().second - dstSideLength / 2 * (tmp_cos - tmp_sin));
+						- (dstPos[0].back().second - dstSideLength / 2 * (tmp_cos - tmp_sin)); /* c = -ax - y */
 				}
 			}
 		}
@@ -829,15 +841,18 @@ public:
 			 *  2. If srcCenter is inside the dst pixel, all rays will be intersected 1 or more times.
 			 *  3. If srcCenter is outside the dst pixel, at least one of the rays will not be intersected.
 			 */
-			vector<dP> dstVertices = { dstVertex[0], dstVertex[1], dstVertex[3], dstVertex[2] };	// When looking clockwise, dst vertices are in this order.
+
+			/* when looking clockwise, dst vertices are in this order */
+			vector<dP> dstVertices = { dstVertex[0], dstVertex[1], dstVertex[3], dstVertex[2] };
 			double tmpr, tmps;
 			int crossPoints;
 			dP srcCenterRay;
 			int addx[] = { 0, 0, -100, 100 };
 			int addy[] = { -100, 100, 0, 0 };
 			for ( unsigned int direction = 0; direction < 4; ++direction ) {
+				/* direction == 0: upper, 1: lower, 2: left, 3: right */
 				crossPoints = 0;
-				srcCenterRay = make_pair(srcCenter.first + addx[direction], srcCenter.second + addy[direction]);	// direction == 0: upper, 1: lower, 2: left, 3: right
+				srcCenterRay = make_pair(srcCenter.first + addx[direction], srcCenter.second + addy[direction]);
 				for ( unsigned int i = 0; i < dstVertices.size(); ++i ) {
 					getIntersectionType(srcCenter, srcCenterRay, tmpr, dstVertices[i], dstVertices[(i + 1) % dstVertices.size()], tmps);
 					if ( - DBL_EPSILON < tmpr && - DBL_EPSILON < tmps && tmps < 1 + DBL_EPSILON )	crossPoints++;
@@ -857,14 +872,14 @@ public:
 				sumArea = 0;
 				areaWeightedPixelValue = 0;
 
-				// Get dst vertices
+				/* get dst vertices */
 				getIntersectionPoint(dstHorizontalLine[dsty], dstVerticalLine[dstx], dstVertex[0]);
 				getIntersectionPoint(dstHorizontalLine[dsty], dstVerticalLine[dstx + 1], dstVertex[1]);
 				getIntersectionPoint(dstHorizontalLine[dsty + 1], dstVerticalLine[dstx], dstVertex[2]);
 				getIntersectionPoint(dstHorizontalLine[dsty + 1], dstVerticalLine[dstx + 1], dstVertex[3]);
 				
 
-				// Get src pixel search range (Take care not to exceed image range)
+				/* Get src pixel search range (take care not to exceed image range) */
 				srcxLoop.first = max(0, (int)floor(dstPos[dsty][dstx].first - dstSideLength*sqrt(2) / 2 - 1));
 				srcxLoop.second = min((int)ceil(dstPos[dsty][dstx].first + dstSideLength*sqrt(2) / 2 + 1), (int)modSrcSize.first - 1);
 				srcyLoop.first = max(0, (int)floor(dstPos[dsty][dstx].second - dstSideLength*sqrt(2) / 2 - 1));
@@ -873,13 +888,13 @@ public:
 
 				for ( int srcy = srcyLoop.first; srcy <= srcyLoop.second; ++srcy ) {
 					for ( int srcx = srcxLoop.first; srcx <= srcxLoop.second; ++srcx ) {
-						// Get src vertices
+						/* get src vertices */
 						srcVertex[0] = make_pair(srcx - 0.5, srcy - 0.5);
 						srcVertex[1] = make_pair(srcx + 0.5, srcy - 0.5);
 						srcVertex[2] = make_pair(srcx - 0.5, srcy + 0.5);
 						srcVertex[3] = make_pair(srcx + 0.5, srcy + 0.5);
 
-						// Judge whether dst pixel included src pixel center or not
+						/* dose dst pixel include src pixel center ? */
 						isIncludedSrcPixelCenter = isIncludedSrcPixel(make_pair(srcx, srcy));
 
 						if ( isIncludedSrcPixelCenter ) {
@@ -953,9 +968,9 @@ private:
 		double c2 = get<2>(line2);
 
 		if ( (fabs(a1) <= DBL_EPSILON && fabs(b1) <= DBL_EPSILON) || (fabs(a2) <= DBL_EPSILON && fabs(b2) <= DBL_EPSILON) )   return false;
-		else if ( fabs(b1) <= DBL_EPSILON && fabs(b2) <= DBL_EPSILON )    return false;   /* Parallel (Both lines are x=constant) */
-		else if ( fabs(a1) <= DBL_EPSILON && fabs(a2) <= DBL_EPSILON )    return false;   /* Parallel (Both lines are y=constant) */
-		else if ( fabs(a2*b1 - a1*b2) <= DBL_EPSILON )  return false;   /* Parallel */
+		else if ( fabs(b1) <= DBL_EPSILON && fabs(b2) <= DBL_EPSILON )    return false; /* Parallel (Both lines are x=constant) */
+		else if ( fabs(a1) <= DBL_EPSILON && fabs(a2) <= DBL_EPSILON )    return false; /* Parallel (Both lines are y=constant) */
+		else if ( fabs(a2*b1 - a1*b2) <= DBL_EPSILON )  return false; /* Parallel */
 		else if ( fabs(b2) <= DBL_EPSILON ) {
 			p.first = -c2 / a2;					/* Confirmed a2 != 0 in advance */
 			p.second = (a1*c2 - a2*c1) / a2*b1; /* Confirmed b1 != 0 in advance */
@@ -995,11 +1010,11 @@ private:
 		s_numerator = (p2.second - p1.second)*(q1.first - p1.first) - (p2.first - p1.first)*(q1.second - p1.second);
 
 		if ( fabs(denominator) <= DBL_EPSILON && fabs(r_numerator) <= DBL_EPSILON && fabs(s_numerator) <= DBL_EPSILON ) {
-			ret = 2;	/* completelly overlap */
+			ret = 2;     /* completelly overlap */
 			return ret;
 		}
 		else if ( fabs(denominator) <= DBL_EPSILON ) {
-			ret = 1;	/* do not intersect (parallel) */
+			ret = 1;     /* do not intersect (parallel) */
 			return ret;
 		}
 
@@ -1008,14 +1023,14 @@ private:
 
 		if ( - DBL_EPSILON <= r && r <= 1.0 + DBL_EPSILON && - DBL_EPSILON <= s && s <= 1.0 + DBL_EPSILON ) {
 			if ( fabs(r) <= DBL_EPSILON || fabs(r - 1.0) <= DBL_EPSILON || fabs(s) <= DBL_EPSILON || fabs(s - 1.0) <= DBL_EPSILON ) {
-				ret = 4;	/* intersect at end point */
+				ret = 4; /* intersect at end point */
 			}
 			else {
-				ret = 3;	/* intersect on line segments (except at end point) */
+				ret = 3; /* intersect on line segments (except at end point) */
 			}
 		}
 		else {
-			ret = 5;	/* intersect on straight lines (except on line segments) */
+			ret = 5;     /* intersect on straight lines (except on line segments) */
 		}
 
 		return ret;
@@ -1499,11 +1514,11 @@ int main()
 
 
 	/* User input parameters */
-	string inputFullPath = "Test_film_dose.csv";	/* --- INPUT PARAMETERS FOR INTERPOLATION --- */
-	srcResolution = make_pair(150, 150);			/* --- INPUT PARAMETERS FOR INTERPOLATION --- */
-	dstResolution = make_pair(25.4, 25.4);			/* --- INPUT PARAMETERS FOR INTERPOLATION --- */
-	srcIsocenter = make_pair(455, 455);				/* --- INPUT PARAMETERS FOR INTERPOLATION --- */
-	rotationAngle = 1.5;							/* --- INPUT PARAMETERS FOR INTERPOLATION --- */
+	string inputFullPath = "Test_film_dose.csv"; /* --- INPUT PARAMETERS FOR INTERPOLATION --- */
+	srcResolution = make_pair(150, 150);         /* --- INPUT PARAMETERS FOR INTERPOLATION --- */
+	dstResolution = make_pair(25.4, 25.4);       /* --- INPUT PARAMETERS FOR INTERPOLATION --- */
+	srcIsocenter = make_pair(455, 455);          /* --- INPUT PARAMETERS FOR INTERPOLATION --- */
+	rotationAngle = 1.5;                         /* --- INPUT PARAMETERS FOR INTERPOLATION --- */
 	string drive, path, base, extension;
 	splitPath(inputFullPath, drive, path, base, extension);
 	if (extension != ".csv" && extension != ".CSV") {
@@ -1529,18 +1544,18 @@ int main()
 	 *   You can switch to Area average interpolation by manipulating the following comments.
 	 */
 	AreaAverageInterpolation aa;
-	LARGE_INTEGER freq;						// For calculation time measurement
-	QueryPerformanceFrequency(&freq);		// For calculation time measurement
-	LARGE_INTEGER time_start, time_end;		// For calculation time measurement
-	QueryPerformanceCounter(&time_start);	// For calculation time measurement
+	LARGE_INTEGER freq;                   // For calculation time measurement
+	LARGE_INTEGER time_start, time_end;   // For calculation time measurement
+	QueryPerformanceFrequency(&freq);     // For calculation time measurement
+	QueryPerformanceCounter(&time_start); // For calculation time measurement
 
 	// If you want to use Area average interpolation method, uncomment one line down and comment out two lines down.
 	ret = aa.areaAverageInterpolation(src, dst, srcResolution, dstResolution, srcIsocenter, dstIsocenter, rotationAngle);	
 	//ret = aa.fastAreaAverageInterpolation(src, dst, srcResolution, dstResolution, srcIsocenter, dstIsocenter, rotationAngle);
 
-	QueryPerformanceCounter(&time_end);		// For calculation time measurement
-	double time = static_cast<double>(time_end.QuadPart - time_start.QuadPart) * 1000.0 / freq.QuadPart;	// For calculation time measurement
-	cout << "Calculation time : " << time << " [ms]" << endl;	// For calculation time measurement
+	QueryPerformanceCounter(&time_end);   // For calculation time measurement
+	double time = static_cast<double>(time_end.QuadPart - time_start.QuadPart) * 1000.0 / freq.QuadPart; // For calculation time measurement
+	cout << "Calculation time : " << time << " [ms]" << endl; // For calculation time measurement
 
 	if ( ! ret.first ) {
 		cout << ret.second << endl;

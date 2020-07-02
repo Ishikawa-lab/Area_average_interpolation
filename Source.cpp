@@ -12,17 +12,17 @@
  * Author : Isshi Nara, 19/06/2020  (isshi_nara@eis.hokudai.ac.jp)       *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include <cfloat>
+#include <cmath>
 #include <algorithm>
 #include <tuple>
 #include <map>
-#include <stdio.h>
-#include <Windows.h>
+#include <chrono>
 #include <iomanip>
 
 using namespace std;
@@ -136,7 +136,7 @@ public:
 		 *  - When srcResolution/sqrt(2) <= dstResolution, src image should be expanded, otherwise area cannot be calculated only 9 patterns (required 19 patterns).
 		 *  - And to minimize branch of processing, rotation angle is restricted in the first quadrant by rotating 90, 180 or 270 degrees in advance.
 		 */
-		unsigned int scale = unsigned int(dstResolution.first / srcResolution.first * sqrt(2) + 1 + DBL_EPSILON);
+		unsigned int scale = static_cast<unsigned int>(dstResolution.first / srcResolution.first * sqrt(2) + 1 + DBL_EPSILON);
 		int beforehandRotationMode; /* 0:None, 1:90deg, 2:180deg, 3:270deg */
 		while ( rotationAngle < 0 )		rotationAngle += 360; /* the range is restricted 0 to 360 degrees */
 		while ( 360 <= rotationAngle )	rotationAngle -= 360; /* the range is restricted 0 to 360 degrees */
@@ -565,8 +565,8 @@ public:
 
 						
 						/* count intersection points (does not exceed 255) */
-						srcPixelState.xCounts = unsigned char(srcPixelState.intersections["xa"].size() + srcPixelState.intersections["xb"].size());
-						srcPixelState.yCounts = unsigned char(srcPixelState.intersections["ya"].size() + srcPixelState.intersections["yb"].size());
+						srcPixelState.xCounts = static_cast<unsigned char>(srcPixelState.intersections["xa"].size() + srcPixelState.intersections["xb"].size());
+						srcPixelState.yCounts = static_cast<unsigned char>(srcPixelState.intersections["ya"].size() + srcPixelState.intersections["yb"].size());
 						
 						/* get area & calculate weighted pixel value */
 						tmpArea = getArea(srcPixelState);
@@ -662,7 +662,7 @@ public:
 		 *  - When srcResolution/sqrt(2) <= dstResolution, src image should be expanded, otherwise area cannot be calculated only 9 patterns (required 19 patterns).
 		 *  - And to minimize branch of processing, rotation angle is restricted in the first quadrant by rotating 90, 180 or 270 degrees in advance.
 		 */
-		unsigned int scale = unsigned int(dstResolution.first / srcResolution.first * sqrt(2) + 1 + DBL_EPSILON);
+		unsigned int scale = static_cast<unsigned int>(dstResolution.first / srcResolution.first * sqrt(2) + 1 + DBL_EPSILON);
 		int beforehandRotationMode; /* 0:None, 1:90deg, 2:180deg, 3:270deg */
 		while ( rotationAngle < 0 )     rotationAngle += 360; /* the range is restricted 0 to 360 degrees */
 		while ( 360 <= rotationAngle )  rotationAngle -= 360; /* the range is restricted 0 to 360 degrees */
@@ -1401,18 +1401,18 @@ private:
 		};
 
 		if ( ! state.isIncludedDstPixelVertex ) {
-			if ( state.xCounts == 0 && state.yCounts == 0 && ! state.isIncludedSrcPixelCenter )			{ state.type = 0; return 0; }
-			if ( state.xCounts == 0 && state.yCounts == 0 && state.isIncludedSrcPixelCenter )			{ state.type = 1; return type1(); }
-			if ( state.xCounts == 1 && state.yCounts == 1 && ! state.isIncludedSrcPixelCenter )			{ state.type = 2; return type2(); }
-			if ( state.xCounts == 2 && state.yCounts == 0 || state.xCounts == 0 && state.yCounts == 2)  { state.type = 3; return type3(); }
-			if ( state.xCounts == 1 && state.yCounts == 1 && state.isIncludedSrcPixelCenter )			{ state.type = 4; return type4(); }
-			if ( state.xCounts == 3 && state.yCounts == 1 || state.xCounts == 1 && state.yCounts == 3 ) { state.type = 5; return type5(); }
-			if ( state.xCounts == 2 && state.yCounts == 2 )												{ state.type = 6; return type6(); }
-			if ( state.xCounts == 0 && state.yCounts == 1 && ! state.isIncludedSrcPixelCenter )			{ state.type = 0; return 0; }		/* boundary condition */
-			if ( state.xCounts == 0 && state.yCounts == 1 && state.isIncludedSrcPixelCenter )			{ state.type = 1; return type1(); }	/* boundary condition */
+			if ( state.xCounts == 0 && state.yCounts == 0 && ! state.isIncludedSrcPixelCenter )             { state.type = 0; return 0; }
+			if ( state.xCounts == 0 && state.yCounts == 0 && state.isIncludedSrcPixelCenter )               { state.type = 1; return type1(); }
+			if ( state.xCounts == 1 && state.yCounts == 1 && ! state.isIncludedSrcPixelCenter )             { state.type = 2; return type2(); }
+			if ( (state.xCounts == 2 && state.yCounts == 0) || (state.xCounts == 0 && state.yCounts == 2) ) { state.type = 3; return type3(); }
+			if ( state.xCounts == 1 && state.yCounts == 1 && state.isIncludedSrcPixelCenter )               { state.type = 4; return type4(); }
+			if ( (state.xCounts == 3 && state.yCounts == 1) || (state.xCounts == 1 && state.yCounts == 3) ) { state.type = 5; return type5(); }
+			if ( state.xCounts == 2 && state.yCounts == 2 )                                                 { state.type = 6; return type6(); }
+			if ( state.xCounts == 0 && state.yCounts == 1 && ! state.isIncludedSrcPixelCenter )             { state.type = 0; return 0; }		/* boundary condition */
+			if ( state.xCounts == 0 && state.yCounts == 1 && state.isIncludedSrcPixelCenter )               { state.type = 1; return type1(); }	/* boundary condition */
 		}
 		else {
-			if ( state.xCounts == 2 && state.yCounts == 0 || state.xCounts == 0 && state.yCounts == 2 ) {
+			if ( (state.xCounts == 2 && state.yCounts == 0) || (state.xCounts == 0 && state.yCounts == 2) ) {
 				for ( auto a : state.intersections ) {
 					if ( a.second.size() == 2 ) {
 						state.type = 7;
@@ -1434,26 +1434,38 @@ private:
 int main()
 {
 	/* lambda functions for reading & writing csv file */
-	auto splitPath = [](string fullPath, string &drive, string &path, string &base, string &extension) {
+	auto splitPath = [](string fullPath, string &path, string &base, string &extension) {
 		/* split full path into drive, path, base and extension */
-		char szDrive[8], szPath[_MAX_PATH], szBase[_MAX_PATH], szExt[_MAX_PATH];
-		_splitpath_s(fullPath.c_str(), szDrive, sizeof(szDrive), szPath, sizeof(szPath), szBase, sizeof(szBase), szExt, sizeof(szExt));
+		size_t dotPos = fullPath.rfind(".");
+		size_t delimiterPos = fullPath.rfind("\\");
+		if (delimiterPos == string::npos) delimiterPos = fullPath.rfind("/");
+		delimiterPos++;
 
-		drive = string(szDrive);
-		path = string(szPath);
-		base = string(szBase);
-		extension = string(szExt);
+		if (dotPos == string::npos) extension = "";
+		else extension = fullPath.substr(dotPos);
+		base = fullPath.substr(delimiterPos, dotPos - delimiterPos);
+		path = fullPath.substr(0, delimiterPos);
 	};
-	auto split = [](string s, char delimiter)->vector<string> {
-		/* split string for csv reading */
+	auto split = [](string s, char delimiter)->vector<double> {
+		/* split 'string' to 'double' elements for csv reading */
 		size_t pos = s.find(delimiter);
-		vector<string> ret;
+		vector<double> ret;
 		while ( pos != string::npos ) {
-			if ( s != " " || s != "" )	ret.emplace_back(s.substr(0, pos));
+			try {
+				double d = stod(s.substr(0, pos));
+				ret.emplace_back(d);
+			} catch ( const invalid_argument& ignored ) {
+				// ignored
+			}
 			s = s.substr(pos + 1);
 			pos = s.find(delimiter);
 		}
-		if ( s != " " || s != "" )	ret.emplace_back(s);
+		try {
+			double d = stod(s.substr(0, pos));
+			ret.emplace_back(d);
+		} catch ( const invalid_argument& ignored ) {
+			// ignored
+		}
 		return ret;
 	};
 	auto csvRead = [&](string path, IMG &data)->bool {
@@ -1468,12 +1480,11 @@ int main()
 		data.clear();
 		while ( getline(fin, str) ) {
 			data.resize(data.size() + 1);
-			vector<string> strvec = split(str, ',');
-			if ( strvec.back() == "" || strvec.back() == " " )	strvec.resize(strvec.size() - 1);
-			if ( imgSize.first < strvec.size() )	imgSize.first = strvec.size();
-			if ( strvec.size() == 0 )	continue;
+			vector<double> vec = split(str, ',');
+			if ( imgSize.first < vec.size() )	imgSize.first = vec.size();
+			if ( vec.size() == 0 )	continue;
 			for ( unsigned int i = 0; i < imgSize.first; ++i ) {
-				data.back().emplace_back(stod(strvec[i]));
+				data.back().emplace_back(vec[i]);
 			}
 			imgSize.second++;
 		}
@@ -1521,18 +1532,17 @@ int main()
 	srcIsocenter = make_pair(455, 455);      /* isocenter of src image */
 	rotationAngle = 1.5;                     /* clockwise is positive */
 	interpolationMode = 2;                   /* 1:Area average, 2:Fast area average */
-	string drive, path, base, extension;
-	splitPath(inputPath, drive, path, base, extension);
+	string path, base, extension;
+	splitPath(inputPath, path, base, extension);
 	if (extension != ".csv" && extension != ".CSV") {
 		cout << "As for the image format, only csv format can be used." << endl;
-		cout << "* drive : " << drive << endl;
 		cout << "* path  : " << path << endl;
 		cout << "* base  : " << base << endl;
 		cout << "* ext   : " << extension << endl;
 		cout << "Run terminated abnormally." << endl;
 		return -1;
 	}
-
+	
 
 	/* Reading source image */
 	if ( ! csvRead(inputPath, src) ) {
@@ -1546,10 +1556,8 @@ int main()
 	 *   You can switch to Area average interpolation by manipulating the following comments.
 	 */
 	AreaAverageInterpolation aa;
-	LARGE_INTEGER freq;               /* For calculation time measurement */
-	LARGE_INTEGER start, end;         /* For calculation time measurement */
-	QueryPerformanceFrequency(&freq); /* For calculation time measurement */
-	QueryPerformanceCounter(&start);  /* For calculation time measurement */
+	chrono::system_clock::time_point start, end; /* For calculation time measurement */
+	start = chrono::system_clock::now();         /* For calculation time measurement */
 
 	switch (interpolationMode) {
 	case 1:
@@ -1568,8 +1576,8 @@ int main()
 		return -1;
 	}
 
-	QueryPerformanceCounter(&end);   /* For calculation time measurement */
-	double time = static_cast<double>(end.QuadPart - start.QuadPart) * 1000.0 / freq.QuadPart; /* For calculation time measurement */
+	end = chrono::system_clock::now(); /* For calculation time measurement */
+	double time = static_cast<double>(chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0); /* For calculation time measurement */
 	cout << "Calculation time : " << time << " [ms]" << endl; /* For calculation time measurement */
 
 	if ( ! ret.first ) {
@@ -1580,7 +1588,7 @@ int main()
 
 
 	/* Output interpolated image as csv */
-	string outputPath = drive + path + base + "_mod" + extension;
+	string outputPath = path + base + "_mod" + extension;
 	if ( ! csvWrite(outputPath, dst) ) {
 		cout << "Run terminated abnormally." << endl;
 		return -1;

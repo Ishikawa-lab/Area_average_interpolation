@@ -24,7 +24,9 @@ compiler : MSVC2015
 
 # Author
 Name:        Isshi Nara
+
 Affiliation: Graduate School of Biomedical Science and Engineering, Hokkaido University.
+
 E-mail:      isshi.nara.01@gmail.com
 
 # License

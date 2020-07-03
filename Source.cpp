@@ -9,7 +9,7 @@
  * based on the code) you agree to acknowledge its use in resulting      *
  * scientific publications.                                              *
  *                                                                       *
- * Author : Isshi Nara, 19/06/2020  (isshi_nara@eis.hokudai.ac.jp)       *
+ * Author : Isshi Nara, 03/07/2020  (isshi_nara@eis.hokudai.ac.jp)       *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #define _USE_MATH_DEFINES

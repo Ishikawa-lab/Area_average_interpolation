@@ -2,25 +2,21 @@
 Source code for Area average interpolation method.
 
 # Overview
-このツールの概要を一言で書く。
-Area average補間法は画像情報の損失がない新しい画素補間法である。
-Area average interpolation method is a novel pixel interpolation method for suppressing loss of image information.
+Area average interpolation method is a pixel interpolation method for suppressing loss of image information.
 
 # Features
-AAのセールスポイントや差別化などを説明する。
-従来の画素補間法(Bi-linear, Bi-cubic法など)では画像縮小の際に使用されない元画素が存在するため、画像情報の損失が起こる。
-Area average補間法では画像情報の損失が起こらないため、より真の値に近い画素補間が可能である。
+Conventional pixel interpolation methods (Bi-linear and Bi-cubic interpolation) cause loss of image information bevause some original pixels are not used in the image reduction process.
+Since the Area average interpolation method does not cause any loss of image information, it allows for pixel interpolation that is closer to the true value.
 
 # Requirement
-ツールやライブラリを使うのに依存がある場合。
-c++ version : c++11
-compiler : MSVC2015
+c++ version : c++11 and later
+compiler : MSVC2015 and later
 
 # Install
-ソースコードをコピペするだけでよい。
+All you have to do is to create your own project and paste the source code.
 
 # Usage
-使い方。ソースコードの何行目にユーザによる設定値がある。必要があれば編集すること。
+In the 100th ~ 110th line of the source code, there are user settings (images to be loaded, resolution, etc.), so please edit them if necessary.
 
 # Author
 Name:        Isshi Nara

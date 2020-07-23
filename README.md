@@ -16,7 +16,7 @@ compiler : MSVC2015 and later
 All you have to do is to create your own project and paste the source code.
 
 # Usage
-In the 100th ~ 110th line of the source code, there are user settings (images to be loaded, resolution, etc.), so please edit them if necessary.
+In the 1528th ~ 1534th line of the source code, there are user settings (image path, resolution, rotation angle, etc.), so please edit them if necessary.
 
 # Author
 Name:        Isshi Nara

@@ -9,8 +9,8 @@ Conventional pixel interpolation methods (Bi-linear and Bi-cubic interpolation) 
 Since the Area average interpolation method does not cause any loss of image information, it allows for pixel interpolation that is closer to the true value.
 
 # Requirement
-c++ version : c++11 and later  
-compiler : MSVC2015 and later
+c++ version: c++11 and later  
+compiler: MSVC2015 and later
 
 # Install
 All you have to do is to create your own project and paste the source code.

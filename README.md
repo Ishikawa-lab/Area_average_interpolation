@@ -5,7 +5,7 @@ Source code for Area average interpolation method.
 Area average interpolation method is a pixel interpolation method for suppressing loss of image information.
 
 # Features
-Conventional pixel interpolation methods (Bi-linear and Bi-cubic interpolation) cause loss of image information bevause some original pixels are not used in the image reduction process.
+Conventional pixel interpolation methods (Bi-linear and Bi-cubic interpolation) cause loss of image information because some original pixels are not used in the image reduction process.
 Since the Area average interpolation method does not cause any loss of image information, it allows for pixel interpolation that is closer to the true value.
 
 # Requirement
